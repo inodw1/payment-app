@@ -5,8 +5,10 @@ import { Form, Button } from 'semantic-ui-react';
 import 'react-credit-cards/es/styles-compiled.css';
 import validator from 'validator';
 import Payment from 'payment';
+import { connect } from "react-redux";
+import { changeActiveStatus } from "../redux/actions/index";
 
-export default class PaymentDetails extends React.Component {
+class PaymentDetails extends React.Component {
     state = {
         number: '',
         name: '',
@@ -111,9 +113,15 @@ export default class PaymentDetails extends React.Component {
             cvc: this.state.cvc,
         }
 
+        let status = {
+            active: false,
+            disabled: true
+        }
+
         this.setState({
-            CardDetails: CardDetails 
+            CardDetails: CardDetails
         })
+        this.props.changeActiveStatus(status);
     }
 
     render() {
@@ -121,69 +129,92 @@ export default class PaymentDetails extends React.Component {
 
         return (
             <div>
-                <Card
-                    number={number}
-                    name={name}
-                    expiry={expiry}
-                    cvc={cvc}
-                    focused={focused}
-                />
-                <Form ref={e => (this.form = e)} onSubmit={this.handleSubmit}>
-                    <h4>Enter Your Card Details</h4>
-                    <Form.Group>
-                        <Form.Input
-                            type="tel"
-                            name="number"
-                            placeholder="Card Number"
-                            pattern="[\d| ]{16,22}"
-                            required
-                            value={this.state.number}
-                            onChange={this.handleInputChange}
-                            onFocus={this.handleInputFocus}
-                            width={4}
+                {this.props.active ?
+                    <div>
+                        <Card
+                            number={number}
+                            name={name}
+                            expiry={expiry}
+                            cvc={cvc}
+                            focused={focused}
                         />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Input
-                            type="text"
-                            name="name"
-                            placeholder="Name"
-                            required
-                            value={this.state.name}
-                            onChange={this.handleInputChange}
-                            onFocus={this.handleInputFocus}
-                            width={4}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Input
-                            type="tel"
-                            name="expiry"
-                            placeholder="MM/YY"
-                            pattern="\d\d/\d\d"
-                            required
-                            value={this.state.expiry}
-                            onChange={this.handleInputChange}
-                            onFocus={this.handleInputFocus}
-                            width={2}
-                        />
-                        <Form.Input
-                            type="tel"
-                            name="cvc"
-                            placeholder="CVC"
-                            pattern="\d{3,4}"
-                            required
-                            value={this.state.cvc}
-                            onChange={this.handleInputChange}
-                            onFocus={this.handleInputFocus}
-                            width={2}
-                        />
-                    </Form.Group>
-                    <Button type='submit'>PAY</Button>
-                    <Button onClick={this.handleResetForm}>RESET</Button>
-                </Form>
+                        <Form ref={e => (this.form = e)} onSubmit={this.handleSubmit}>
+                            <h4>Enter Your Card Details</h4>
+                            <Form.Group>
+                                <Form.Input
+                                    type="tel"
+                                    name="number"
+                                    placeholder="Card Number"
+                                    pattern="[\d| ]{16,22}"
+                                    required
+                                    value={this.state.number}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    width={4}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Name"
+                                    required
+                                    value={this.state.name}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    width={4}
+                                />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Input
+                                    type="tel"
+                                    name="expiry"
+                                    placeholder="MM/YY"
+                                    pattern="\d\d/\d\d"
+                                    required
+                                    value={this.state.expiry}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    width={2}
+                                />
+                                <Form.Input
+                                    type="tel"
+                                    name="cvc"
+                                    placeholder="CVC"
+                                    pattern="\d{3,4}"
+                                    required
+                                    value={this.state.cvc}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    width={2}
+                                />
+                            </Form.Group>
+                            <Button type='submit'>PAY</Button>
+                            <Button onClick={this.handleResetForm}>RESET</Button>
+                        </Form>
+                    </div>
+                    :
+                    <div>
+                        <p>LOADING SCREEN</p>
+                    </div>
+                }
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        active: state.active,
+        disabled: state.disabled
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        changeActiveStatus: status => dispatch(changeActiveStatus(status))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentDetails);
 
