@@ -5,7 +5,7 @@ import { Form, Button, Dimmer, Loader, Segment, Label } from 'semantic-ui-react'
 import 'react-credit-cards/es/styles-compiled.css';
 import Payment from 'payment';
 import { connect } from "react-redux";
-import { changeActiveStatus } from "../redux/actions/index";
+import { changeActiveStatus, addCardData } from "../redux/actions/index";
 
 class PaymentDetails extends React.Component {
     state = {
@@ -22,10 +22,12 @@ class PaymentDetails extends React.Component {
         });
     };
 
+    /** function is replacing all the characters except numbers */
     clearNumber = (value = '') => {
         return value.replace(/\D+/g, '');
     }
 
+    /** creating valid thru format as a MM/YY | selecting first two numbers and insert / mark */
     formatExpiry = (value) => {
         const clearValue = this.clearNumber(value);
 
@@ -41,10 +43,12 @@ class PaymentDetails extends React.Component {
             return value;
         }
 
+        /** getting card type from payment library */
         const issuer = Payment.fns.cardType(value);
         const clearValue = this.clearNumber(value);
         let nextValue;
 
+        /** creating spaces between card numbers according to card type */
         switch (issuer) {
             case 'amex':
                 nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
@@ -121,6 +125,7 @@ class PaymentDetails extends React.Component {
             CardDetails: CardDetails
         })
         this.props.changeActiveStatus(status);
+        this.props.addCardData(CardDetails);
     }
 
     render() {
@@ -215,7 +220,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeActiveStatus: status => dispatch(changeActiveStatus(status))
+        changeActiveStatus: status => dispatch(changeActiveStatus(status)),
+        addCardData: data => dispatch(addCardData(data))
     };
 }
 

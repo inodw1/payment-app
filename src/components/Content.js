@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, Step } from 'semantic-ui-react'
+import { Icon, Step, Segment } from 'semantic-ui-react'
 import PaymentDetails from './PaymentDetails';
 import { connect } from "react-redux";
 
@@ -22,18 +22,25 @@ class ContentComponent extends React.Component {
                         </Step.Content>
                     </Step>
                 </Step.Group>
-                {/* <Segment attached> */}
                 <PaymentDetails />
-                {/* </Segment> */}
+                {this.props.disabled &&
+                    <Segment attached>
+                        <p> CARD NO - {this.props.card_data.number} </p>
+                        <p> NAME - {this.props.card_data.name} </p>
+                        <p> VALID THRU - {this.props.card_data.expiry} </p>
+                        <p> CVC - {this.props.card_data.cvc} </p>
+                    </Segment>
+                }
             </div>
         );
     }
 }
 
 const mapStateToProps = state => {
-    return { 
-        active: state.active, 
-        disabled: state.disabled 
+    return {
+        active: state.active,
+        disabled: state.disabled,
+        card_data: state.card_data
     };
 };
 

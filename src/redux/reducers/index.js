@@ -1,8 +1,9 @@
-import { STATUS } from "../constants/action-types";
+import { STATUS, CARD_DATA } from "../constants/action-types";
 
 const initialState = {
     active: true,
     disabled: false,
+    card_data: {}
 };
 
 function rootReducer(state = initialState, action) {
@@ -10,6 +11,10 @@ function rootReducer(state = initialState, action) {
         return Object.assign({}, state, {
             active: action.payload.status,
             disabled: action.payload.disabled
+        });
+    } else if (action.type === CARD_DATA) {
+        return Object.assign({}, state, {
+            card_data: action.payload
         });
     }
     return state;
