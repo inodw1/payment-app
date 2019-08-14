@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from 'react-credit-cards';
-import { Row, Col } from "reactstrap";
 import { Form, Button, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
 import 'react-credit-cards/es/styles-compiled.css';
 import Payment from 'payment';
@@ -103,8 +102,7 @@ class PaymentDetails extends React.Component {
             name: '',
             expiry: '',
             cvc: '',
-            focused: '',
-            CardDetails: {}
+            focused: ''
         })
     }
 
@@ -121,9 +119,6 @@ class PaymentDetails extends React.Component {
             disabled: true
         }
 
-        this.setState({
-            CardDetails: CardDetails
-        })
         this.props.changeActiveStatus(status);
         this.props.addCardData(CardDetails);
     }
@@ -132,9 +127,13 @@ class PaymentDetails extends React.Component {
         const { name, number, expiry, cvc, focused } = this.state;
 
         return (
-            <div>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
                 {this.props.active ?
-                    <div>
+                    <div className="mt-4">
                         <Card
                             number={number}
                             name={name}
@@ -142,9 +141,9 @@ class PaymentDetails extends React.Component {
                             cvc={cvc}
                             focused={focused}
                         />
-                        <Form ref={e => (this.form = e)} onSubmit={this.handleSubmit}>
+                        <Form ref={e => (this.form = e)} onSubmit={this.handleSubmit} className="mt-4">
                             <h4>Enter Your Card Details</h4>
-                            <Form.Group>
+                            <Form.Group className="mt-4">
                                 <Form.Input
                                     type="tel"
                                     name="number"
@@ -154,7 +153,8 @@ class PaymentDetails extends React.Component {
                                     value={this.state.number}
                                     onChange={this.handleInputChange}
                                     onFocus={this.handleInputFocus}
-                                    width={4}
+                                    width={16}
+                                    className="mb-2"
                                 />
                             </Form.Group>
                             <Form.Group>
@@ -166,7 +166,8 @@ class PaymentDetails extends React.Component {
                                     value={this.state.name}
                                     onChange={this.handleInputChange}
                                     onFocus={this.handleInputFocus}
-                                    width={4}
+                                    width={16}
+                                    className="mb-2"
                                 />
                             </Form.Group>
                             <Form.Group>
@@ -179,7 +180,8 @@ class PaymentDetails extends React.Component {
                                     value={this.state.expiry}
                                     onChange={this.handleInputChange}
                                     onFocus={this.handleInputFocus}
-                                    width={2}
+                                    width={8}
+                                    className="mb-2"
                                 />
                                 <Form.Input
                                     type="tel"
@@ -190,18 +192,21 @@ class PaymentDetails extends React.Component {
                                     value={this.state.cvc}
                                     onChange={this.handleInputChange}
                                     onFocus={this.handleInputFocus}
-                                    width={2}
+                                    width={8}
+                                    className="mb-2"
                                 />
                             </Form.Group>
-                            <Button type='submit'>PAY</Button>
-                            <Button onClick={this.handleResetForm}>RESET</Button>
+                            <Form.Group>
+                                <Form.Button fluid onClick={this.handleResetForm} width={8} className="mb-2">RESET</Form.Button>
+                                <Form.Button fluid type='submit' color='blue' width={8} className="mb-2">PAY</Form.Button>
+                            </Form.Group>
                         </Form>
                     </div>
                     :
                     <div>
-                        <Segment style={{height: '50vh'}}>
+                        <Segment style={{ height: '50vh', width: '280px' }} className="mb-4">
                             <Dimmer active inverted>
-                                <Loader size='large' onClick={() => {window.location.reload()}}><Label color='blue'>CLICK HERE TO RESET</Label></Loader>
+                                <Loader size='large' onClick={() => { window.location.reload() }}><Label color='blue'>CLICK HERE TO RESET</Label></Loader>
                             </Dimmer>
                         </Segment>
                     </div>

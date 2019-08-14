@@ -8,9 +8,9 @@ function App() {
   return (
     <div>
       <header>
-        <NavBar/>
-        <HeaderComponent/>
-        <ContentComponent/>
+        <NavBar />
+        <HeaderComponent />
+        <ContentComponent />
       </header>
     </div>
   );
