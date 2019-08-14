@@ -1,7 +1,10 @@
 import React from 'react';
 import Card from 'react-credit-cards';
+import { Row, Col } from "reactstrap";
 import { Form, Button } from 'semantic-ui-react';
 import 'react-credit-cards/es/styles-compiled.css';
+import validator from 'validator';
+import Payment from 'payment';
 
 export default class PaymentDetails extends React.Component {
     state = {
@@ -18,13 +21,72 @@ export default class PaymentDetails extends React.Component {
         });
     };
 
+    clearNumber = (value = '') => {
+        return value.replace(/\D+/g, '');
+    }
+
+    formatExpiry = (value) => {
+        const clearValue = this.clearNumber(value);
+
+        if (clearValue.length >= 3) {
+            return `${clearValue.slice(0, 2)}/${clearValue.slice(2, 4)}`;
+        }
+
+        return clearValue;
+    }
+
+    formatNumber = (value) => {
+        if (!value) {
+            return value;
+        }
+
+        const issuer = Payment.fns.cardType(value);
+        const clearValue = this.clearNumber(value);
+        let nextValue;
+
+        switch (issuer) {
+            case 'amex':
+                nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+                    4,
+                    10,
+                )} ${clearValue.slice(10, 15)}`;
+                break;
+            case 'dinersclub':
+                nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+                    4,
+                    10,
+                )} ${clearValue.slice(10, 14)}`;
+                break;
+            default:
+                nextValue = `${clearValue.slice(0, 4)} ${clearValue.slice(
+                    4,
+                    8,
+                )} ${clearValue.slice(8, 12)} ${clearValue.slice(12, 19)}`;
+                break;
+        }
+
+        return nextValue.trim();
+    }
+
+    formatCVC = (value, allValues = {}) => {
+        const clearValue = this.clearNumber(value);
+        let maxLength = 4;
+
+        if (allValues.number) {
+            const issuer = Payment.fns.cardType(allValues.number);
+            maxLength = issuer === 'amex' ? 4 : 3;
+        }
+
+        return clearValue.slice(0, maxLength);
+    }
+
     handleInputChange = ({ target }) => {
         if (target.name === 'number') {
-            // validate here
+            target.value = this.formatNumber(target.value);
         } else if (target.name === 'expiry') {
-            // validate here
+            target.value = this.formatExpiry(target.value);
         } else if (target.name === 'cvc') {
-            // validate here
+            target.value = this.formatCVC(target.value);
         }
 
         this.setState({ [target.name]: target.value });
@@ -36,7 +98,21 @@ export default class PaymentDetails extends React.Component {
             name: '',
             expiry: '',
             cvc: '',
-            focused: ''
+            focused: '',
+            CardDetails: {}
+        })
+    }
+
+    handleSubmit = () => {
+        let CardDetails = {
+            number: this.state.number,
+            name: this.state.name,
+            expiry: this.state.expiry,
+            cvc: this.state.cvc,
+        }
+
+        this.setState({
+            CardDetails: CardDetails 
         })
     }
 
@@ -45,7 +121,6 @@ export default class PaymentDetails extends React.Component {
 
         return (
             <div>
-                <h4>Enter Your Card Details</h4>
                 <Card
                     number={number}
                     name={name}
@@ -53,7 +128,8 @@ export default class PaymentDetails extends React.Component {
                     cvc={cvc}
                     focused={focused}
                 />
-                <Form ref={e => (this.form = e)}>
+                <Form ref={e => (this.form = e)} onSubmit={this.handleSubmit}>
+                    <h4>Enter Your Card Details</h4>
                     <Form.Group>
                         <Form.Input
                             type="tel"
@@ -103,9 +179,9 @@ export default class PaymentDetails extends React.Component {
                             width={2}
                         />
                     </Form.Group>
+                    <Button type='submit'>PAY</Button>
+                    <Button onClick={this.handleResetForm}>RESET</Button>
                 </Form>
-                <Button type='submit'>PAY</Button>
-                <Button onClick={this.handleResetForm}>RESET</Button>
             </div>
         );
     }
