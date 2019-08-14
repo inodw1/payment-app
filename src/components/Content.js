@@ -18,9 +18,9 @@ const ContentComponent = () => (
                 </Step.Content>
             </Step>
         </Step.Group>
-        <Segment attached>
+        {/* <Segment attached> */}
             <PaymentDetails />
-        </Segment>
+        {/* </Segment> */}
     </div>
 )
 

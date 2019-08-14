@@ -4,7 +4,7 @@ import NoeticLogo from '../assets/noetic.png';
 
 const HeaderComponent = () => (
   <div>
-    <Image centered size='large' src={NoeticLogo} />
+    {/* <Image centered size='large' src={NoeticLogo} /> */}
     <Header as='h2' icon textAlign='center'>
       <Icon name='credit card' circular />
       <Header.Content>Pay Now</Header.Content>
