@@ -1,9 +1,8 @@
 import React from 'react';
 import Card from 'react-credit-cards';
 import { Row, Col } from "reactstrap";
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Dimmer, Loader, Segment, Label } from 'semantic-ui-react';
 import 'react-credit-cards/es/styles-compiled.css';
-import validator from 'validator';
 import Payment from 'payment';
 import { connect } from "react-redux";
 import { changeActiveStatus } from "../redux/actions/index";
@@ -195,7 +194,11 @@ class PaymentDetails extends React.Component {
                     </div>
                     :
                     <div>
-                        <p>LOADING SCREEN</p>
+                        <Segment style={{height: '50vh'}}>
+                            <Dimmer active inverted>
+                                <Loader size='large' onClick={() => {window.location.reload()}}><Label color='blue'>CLICK HERE TO RESET</Label></Loader>
+                            </Dimmer>
+                        </Segment>
                     </div>
                 }
             </div>
